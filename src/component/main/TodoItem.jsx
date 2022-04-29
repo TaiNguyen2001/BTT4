@@ -1,5 +1,5 @@
-import { useContext, useEffect, useRef, useState } from "react"
-import { TodosContext } from "../contexts/todo"
+import { useContext, useLayoutEffect, useRef, useState } from "react"
+import { TodosContext } from "../../contexts/todo"
 
 function TodoItem ({todo, isEditing, setEditingID}) {
   const [editText, setEditText] = useState(todo.text)
@@ -30,7 +30,7 @@ function TodoItem ({todo, isEditing, setEditingID}) {
     dispatch({type: "removeTask", payload: todo.id})
   }
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (isEditing) {
       editInputEl.current.focus()
     }
@@ -54,4 +54,3 @@ function TodoItem ({todo, isEditing, setEditingID}) {
 }
 
 export default TodoItem
-

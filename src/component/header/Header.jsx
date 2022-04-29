@@ -1,5 +1,6 @@
 import { useContext, useState } from 'react'
-import { TodosContext } from '../contexts/todo'
+import { TodosContext } from '../../contexts/todo'
+import './Header.css'
 
 function Header () {
   const [text, setText] = useState("")

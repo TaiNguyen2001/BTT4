@@ -5,12 +5,6 @@ const intialState = {
   filter: "all"
 }
 
-type Task = {
-  id: string;
-  text: string;
-  isCompleted: boolean
-}
-
 const reducer = function(state, action) {
   switch (action.type) {
     case 'addTask': {

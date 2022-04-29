@@ -1,6 +1,7 @@
 import { useContext, useState } from "react"
-import { TodosContext } from "../contexts/todo"
+import { TodosContext } from "../../contexts/todo"
 import TodoItem from "./TodoItem"
+import './Main.css'
 
 function Main() {
   const [todosState, dispatch] = useContext(TodosContext)

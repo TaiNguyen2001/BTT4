@@ -1,14 +1,15 @@
 import { useContext } from "react"
-import { TodosContext } from "../contexts/todo"
+import { TodosContext } from "../../contexts/todo"
+import './Footer.css'
 
 function Footer() {
   const [todosState, dispatch] = useContext(TodosContext)
   const activeCount = todosState.todos.filter(todo => (
     !todo.isCompleted
   )).length
-  const noTodo = todosState.todos.length === 0 ? 'hidden' : ''
+  const noTodo = todosState.todos.length ? '': 'hidden'
   const isChecked = todosState.todos.some(todo => (todo.isCompleted)) ? '' : 'hidden'
-  const isNotCheck = todosState.todos.filter(todo => !todo.isCompleted)
+  const isUncheck = todosState.todos.filter(todo => !todo.isCompleted)
   const getSelectedClass = function (filterName) {
     return todosState.filter === filterName ? 'selected' : ''
   }
@@ -17,7 +18,7 @@ function Footer() {
     dispatch({type : "changeFilter" , payload : filterName})
   }
   const deleteCompleted = function () {
-    dispatch({type: 'deleteCompleted', payload: isNotCheck})
+    dispatch({type: 'deleteCompleted', payload: isUncheck})
   }
   return (
     <footer className={`footer ${noTodo}`}>
