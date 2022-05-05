@@ -1,22 +1,45 @@
 import { createContext, useEffect, useReducer } from "react"
 
-const intialState = {
+
+
+
+interface Actions {
+  type: "addTask" | "checkAll" | "changeFilter" | "changeTodo" | "changeState" | "removeTask" | "deleteCompleted",
+  payload: any
+}
+
+export interface Todo {
+  id: string,
+  text: string,
+  isCompleted: boolean
+}
+
+export interface State {
+  todos: Todo[],
+  filter: string
+}
+
+const intialState: State = {
   todos: [],
   filter: "all"
 }
 
-const reducer = function(state, action) {
+
+export const reducer = function(state: State, action: Actions) {
   switch (action.type) {
     case 'addTask': {
-      const newTask = {
+      const newTask : Todo = {
         id : Math.random().toString(16),
         text : action.payload,
         isCompleted : false
       }
-      return {
+      const newState = {
         ...state,
         todos: [...state.todos, newTask]
       }
+      localStorage.setItem('state', JSON.stringify(newState))
+      window.location.reload()
+      return newState
     }
     case 'checkAll': {
       const updatedTodos = state.todos.map(todo => (
@@ -25,25 +48,35 @@ const reducer = function(state, action) {
           isCompleted: action.payload
         }
       ))
-      return {
+      const newState = {
         ...state,
         todos : updatedTodos
       }
+      localStorage.setItem('state', JSON.stringify(newState))
+      window.location.reload()
+      return newState
     }
     case 'changeFilter': {
-      return {
+      const newState = {
         ...state,
         filter: action.payload
       }
+      localStorage.setItem('state', JSON.stringify(newState))
+      window.location.reload()
+      return newState
     }
     case 'changeTodo': {
       let updatedTodos
+      let newState 
       if (action.payload.text.trim() === '') {
         updatedTodos = state.todos.filter(todo => (todo.id !== action.payload.id))
-        return {
+        newState = {
           ...state,
           todos: updatedTodos
         }
+        localStorage.setItem('state', JSON.stringify(newState))
+        window.location.reload()
+        return newState
       }
       updatedTodos = state.todos.map(todo => {
         if (todo.id === action.payload.id) {
@@ -54,10 +87,13 @@ const reducer = function(state, action) {
         }
         return todo
       })
-      return {
+      newState = {
         ...state,
         todos: updatedTodos
       }
+      localStorage.setItem('state', JSON.stringify(newState))
+      window.location.reload()
+      return newState
     }
     case 'changeState': {
       const updatedTodos = state.todos.map(todo => {
@@ -69,24 +105,33 @@ const reducer = function(state, action) {
         }
         return todo
       })
-      return {
+      const newState = {
         ...state,
         todos: updatedTodos
       }
+      localStorage.setItem('state', JSON.stringify(newState))
+      window.location.reload()
+      return newState
     }
     case 'removeTask': {
       const updatedTodos = state.todos.filter(todo => (todo.id !== action.payload))
-      return {
+      const newState = {
         ...state,
         todos: updatedTodos
       }
+      localStorage.setItem('state', JSON.stringify(newState))
+      window.location.reload()
+      return newState
     }
     case "deleteCompleted": {
       const updatedTodos = action.payload
-      return {
+      const newState = {
         ...state,
         todos: updatedTodos
       }
+      localStorage.setItem('state', JSON.stringify(newState))
+      window.location.reload()
+      return newState
     }
     default: {
       return state
@@ -94,14 +139,12 @@ const reducer = function(state, action) {
   }
 }
 
-export const TodosContext = createContext("")
-export const TodosProvider  = ({children}) => {
-  const [state, dispatch] = useReducer(reducer, intialState, () => {
+export const TodosContext = createContext(intialState)
+export const TodosProvider  = ({children}:any) => {
+  const [state,] = useReducer(reducer, intialState,() => {
     const localData = localStorage.getItem('state')
-    return localData ? JSON.parse(localData) : []
+    return localData ? JSON.parse(localData) : intialState
   })
-  useEffect(() => {
-    localStorage.setItem('state', JSON.stringify(state))
-  },[state])
-  return <TodosContext.Provider value={[state, dispatch]}>{children}</TodosContext.Provider>
+  return <TodosContext.Provider value={state}>{children}</TodosContext.Provider>
 }
+

@@ -1,19 +1,20 @@
-import { useContext } from "react"
-import { TodosContext } from "../../contexts/todo"
+import { useContext, useReducer } from "react"
+import { reducer, TodosContext, Todo } from "../../contexts/todo"
 import './Footer.css'
 
 function Footer() {
-  const [todosState, dispatch] = useContext(TodosContext)
-  const activeCount = todosState.todos.filter(todo => (
+  const context = useContext(TodosContext)
+  const [todosState, dispatch] = useReducer(reducer, context)
+  const activeCount = todosState.todos.filter((todo: Todo) => (
     !todo.isCompleted
   )).length
   const noTodo = todosState.todos.length ? '': 'hidden'
-  const isChecked = todosState.todos.some(todo => (todo.isCompleted)) ? '' : 'hidden'
-  const isUncheck = todosState.todos.filter(todo => !todo.isCompleted)
-  const getSelectedClass = function (filterName) {
+  const isChecked = todosState.todos.some((todo: Todo) => (todo.isCompleted)) ? '' : 'hidden'
+  const isUncheck = todosState.todos.filter((todo: Todo) => !todo.isCompleted)
+  const getSelectedClass = function (filterName: any) {
     return todosState.filter === filterName ? 'selected' : ''
   }
-  const changeFilter = function (event, filterName) {
+  const changeFilter = function (event: any, filterName: any) {
     event.preventDefault()
     dispatch({type : "changeFilter" , payload : filterName})
   }

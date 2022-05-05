@@ -1,24 +1,26 @@
-import { useContext, useLayoutEffect, useRef, useState } from "react"
-import { TodosContext } from "../../contexts/todo"
+import React, { useContext, useLayoutEffect, useReducer, useRef, useState } from "react"
+import { TodosContext , reducer} from "../../contexts/todo"
 
-function TodoItem ({todo, isEditing, setEditingID}) {
+
+function TodoItem ({todo, isEditing, setEditingID}: any) {
   const [editText, setEditText] = useState(todo.text)
-  const [, dispatch] = useContext(TodosContext)
+  const context = useContext(TodosContext)
+  const [, dispatch] = useReducer(reducer, context)
   const editingClass = isEditing ? "editing" : "" 
   const completedClass = todo.isCompleted ? 'completed' : ''
-  const editInputEl = useRef(null)
+  const editInputEl = useRef<HTMLInputElement>(null)
   const setTodoIEdit = function () {
     setEditingID(todo.id)
   }
-  const changeEditText = function (event) {
+  const changeEditText = function (event : React.ChangeEvent<HTMLInputElement>) {
     setEditText(event.target.value)
   }
-  const saveEdit = function (event) {
-    if (event.keyCode === 13) {
+  const saveEdit = function (event : React.KeyboardEvent<HTMLInputElement>) {
+    if (event.key === "Enter") {
       dispatch({type: 'changeTodo', payload: {id: todo.id, text: editText}})
       setEditingID(null)
     }
-    if (event.keyCode === 27) {
+    if (event.key === "Escape") {
       setEditText(todo.text)
       setEditingID(null)
     }
@@ -31,7 +33,7 @@ function TodoItem ({todo, isEditing, setEditingID}) {
   }
 
   useLayoutEffect(() => {
-    if (isEditing) {
+    if (isEditing && editInputEl.current) {
       editInputEl.current.focus()
     }
   })
